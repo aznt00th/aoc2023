@@ -60,3 +60,8 @@ pytest part1.py
 python partx.py input.txt | aoc-submit --part x
 ```
 updating x as appropriate
+
+9. Join my private leaderboard
+```
+1077644-49910ddf
+```
