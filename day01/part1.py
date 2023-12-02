@@ -19,10 +19,7 @@ def compute(s: str) -> int:
             if char.isdigit():
                 if first_num is None:
                     first_num = int(char)
-                else:
-                    second_num = int(char)
-        if second_num is None:
-            second_num = first_num
+                second_num = int(char)
         total += 10 * first_num + second_num
     return total
 

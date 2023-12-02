@@ -19,7 +19,7 @@ def parse_chunk(s:str)->int:
     for i in range(len(s)+1):
         if s[:i] in valid_digits:
             return valid_digits[s[:i]]
-    raise ValueError 
+    raise ValueError
 
 def compute(s: str) -> int:
     lines = s.splitlines()
@@ -31,12 +31,9 @@ def compute(s: str) -> int:
                 val = parse_chunk(line[i:min(i+5, len(line))])
                 if first_num is None:
                     first_num = val
-                else:
-                    second_num = val
+                second_num = val
             except ValueError as e:
                pass
-        if second_num is None:
-            second_num = first_num
         total += 10 * first_num + second_num
     return total
 
