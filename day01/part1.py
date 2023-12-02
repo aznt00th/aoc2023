@@ -16,13 +16,11 @@ def compute(s: str) -> int:
     for line in lines:
         first_num, second_num = None, None
         for char in line:
-            try:
+            if char.isdigit():
                 if first_num is None:
                     first_num = int(char)
                 else:
                     second_num = int(char)
-            except ValueError as e:
-                pass
         if second_num is None:
             second_num = first_num
         total += 10 * first_num + second_num
