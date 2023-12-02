@@ -14,7 +14,7 @@ valid_digits = {'one': 1, 'two':2 , 'three':3, 'four':4,
                 'eight':8, 'nine':9}
 
 def parse_chunk(s:str)->int:
-    if s[0] in '123456789':
+    if s[0].isdigit():
         return int(s[0])
     for i in range(len(s)+1):
         if s[:i] in valid_digits:
