@@ -17,7 +17,6 @@ def compute(s: str) -> int:
     lines = s.splitlines()
     for line in lines:
         colour_maximums = {'red': 1, 'green': 1, 'blue': 1}
-        possible = True
         game_details = line.split(':')[1]
         for round in game_details.split(';'):
             for colour_details in round.split(','):

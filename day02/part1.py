@@ -16,14 +16,14 @@ def compute(s: str) -> int:
     lines = s.splitlines()
     for line in lines:
         possible = True
-        game_details = line.split(':')[1]
+        round_details, game_details = line.split(':')
         for round in game_details.split(';'):
             for colour_details in round.split(','):
                 num, colour = colour_details.strip().split(' ')
                 if int(num) > colour_maximums[colour]:
                     possible = False
         if possible:
-            res += int(line.split(':')[0].split(' ')[1])
+            res += int(round_details.split(' ')[1])
     return res
 
 
