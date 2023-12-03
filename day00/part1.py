@@ -11,10 +11,6 @@ INPUT_TXT = os.path.join(os.path.dirname(__file__), 'input.txt')
 
 
 def compute(s: str) -> int:
-    numbers = support.parse_numbers_split(s)
-    for n in numbers:
-        pass
-
     lines = s.splitlines()
     for line in lines:
         pass
