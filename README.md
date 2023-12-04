@@ -1,3 +1,5 @@
+Support and template shamelessly stolen from https://github.com/anthonywritescode/aoc2015
+
 For those who prefer a video resource, installation and usage can be found on AnthonyWritesCode's youtube channel here: https://www.youtube.com/watch?v=CZZLCeRya74
 
 Otherwise:
