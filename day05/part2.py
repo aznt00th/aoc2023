@@ -10,39 +10,12 @@ import support
 INPUT_TXT = os.path.join(os.path.dirname(__file__), 'input.txt')
 
 
-def update_map(section, line, maps, reversed ):
+def update_map(section, line, maps):
     if section not in maps:
         maps[section] = {}
-        reversed[section] = {}
     dest_start, source_start, length = line.split()
-    maps[section][(int(source_start), int(source_start) + int(length))] = int(dest_start) - int(source_start)
-    reversed[section][(int(dest_start), int(dest_start) + int(length))] = int(source_start) - int(dest_start)
-    return maps, reversed
-
-
-def condense_map(maps):
-    res = {}
-    for section, map in maps.items():
-        for (lower, upper), offset in map.items():
-            for (existing_lower, existing_upper), existing_offset in res.items():
-                if existing_upper + existing_offset > lower or existing_lower + existing_offset <= upper:
-                    del res[(existing_lower, existing_upper)]
-                    if existing_lower + existing_offset < lower:
-                        res[(existing_lower, lower - existing_offset)] = existing_offset
-                        if existing_upper + existing_offset < upper:
-                            res[(lower - existing_offset + 1, existing_upper)] = existing_offset + offset
-                            res[(existing_upper + 1, upper + existing_offset)] = offset
-                        else:
-                            res[(upper - existing_offset + 1, existing_upper)] = offset
-                            res[(lower - existing_offset, upper - existing_offset)] = existing_offset + offset
-                    elif existing_upper + existing_offset > upper: # overlapping on upper end
-                        res[(upper - existing_offset, existing_upper)] = existing_offset
-                        if existing_lower + existing_offset:
-                           pass
-                else:
-                   res[(lower, upper)] = offset
-
-
+    maps[section][(int(source_start), int(source_start) + int(length)-1)] = int(dest_start) - int(source_start)
+    return maps
 
 def compute(s: str) -> int:
     lines = s.splitlines()
@@ -52,41 +25,49 @@ def compute(s: str) -> int:
         seeds += [(int(tmp[i]), int(tmp[i]) + int(tmp[i+1]) -1)]
     section = None
     maps = {}
-    reversed = {}
     for line in lines[1:]:
         if not line:
             continue
         if line[0].isdigit():
-            maps, reversed = update_map(section, line, maps, reversed)
+            maps = update_map(section, line, maps)
         elif line[0].isalpha():
             section = line.split(' map')[0]
-    # TODO: implement solution here!
-    res = []
-    reversed_steps = ['humidity-to-location', 'temperature-to-humidity', 'light-to-temperature', 'water-to-light', 'fertilizer-to-water', 'soil-to-fertilizer', 'seed-to-soil']
-#    condensed_map = condense_map(maps)
-    cnt = 46
-    while True:
-        curr = cnt
-        for key in reversed_steps:
-            map = reversed[key]
-            for (lower, upper), offset in map.items():
-                if curr>=lower and curr <= upper:
-                    curr = curr + offset
-                    break
-        for lower_seed, upper_seed in seeds:
-            if curr >=lower_seed and curr <= upper_seed:
-                return cnt
-        cnt += 1
-    for seed in seeds:
-        curr = int(seed)
-        for map in maps.values():
-            for (lower, upper), offset in map.items():
-                if curr>=lower and curr <= upper:
-                    curr = curr + offset
-                    break
-        res.append(curr)
-    return min(res)
 
+    unmapped = seeds
+    for section, map in maps.items():
+        next = []
+        while len(unmapped) > 0:
+            c_l, c_u = unmapped.pop()
+            seen = False
+            for (lower, upper), offset in map.items():
+                if c_u < lower or c_l > upper:
+                    continue
+                if c_l >= lower and c_u <= upper:
+                    next.append((c_l + offset, c_u + offset))
+                    seen=True
+                    break
+                elif c_u > upper and c_l >= lower:
+                    next.append((c_l + offset, upper+offset))
+                    unmapped.append((upper+1, c_u))
+                    seen = True
+                elif c_l < lower and c_u <= upper:
+                    next.append((lower+offset, c_u+offset))
+                    unmapped.append((c_l, lower-1))
+                    seen = True
+                    break
+                else:
+                    next.append((lower+offset, upper+offset))
+                    unmapped.append((upper+1, c_u))
+                    unmapped.append((c_l+1, lower))
+                    seen = True
+                    break
+            if not seen:
+                next.append((c_l, c_u))
+        unmapped = next
+    min_l = unmapped[0][0]
+    for lower_location, _ in unmapped:
+        min_l = min(lower_location, min_l)
+    return min_l
 
 INPUT_S = '''\
 seeds: 79 14 55 13
