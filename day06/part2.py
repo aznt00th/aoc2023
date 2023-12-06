@@ -15,17 +15,12 @@ def compute(s: str) -> int:
     lines = s.splitlines()
     times = lines[0].split(':')[1].split()    
     distances = lines[1].split(':')[1].split()
-    total_time = 0
-    for time in times:
-        total_time = 10**len(time) * total_time + int(time)
-    total_dist = 0
-    for dist in distances:
-        total_dist = 10**len(dist) * total_dist + int(dist)
+    total_time = int("".join(times))
+    total_dist = int("".join(distances))
     win = 0
     for i in range(total_time):
         if i * (total_time - i) > total_dist:
             win +=1
-    # TODO: implement solution here!
     return win
 
 
