@@ -19,11 +19,17 @@ def compute(s: str) -> int:
     distances = [int(dist) for dist in distances]
     res = 1
     for time, dist in zip(times, distances):
-        win = 0
-        for i in range(time):
-            if i * (time - i) > dist:
-                win +=1
-        res *= win
+        i = 0
+        while True:
+            if i*(time - i) > dist:
+                break
+            i += 1
+        j = time
+        while True:
+            if j*(time - j) > dist:
+                break
+            j-=1
+        res *= j - i + 1
     # TODO: implement solution here!
     return res
 

@@ -17,11 +17,17 @@ def compute(s: str) -> int:
     distances = lines[1].split(':')[1].split()
     total_time = int("".join(times))
     total_dist = int("".join(distances))
-    win = 0
-    for i in range(total_time):
+    i = 0
+    while True:
         if i * (total_time - i) > total_dist:
-            win +=1
-    return win
+            break
+        i += 1
+    j = total_time
+    while True:
+        if j * (total_time - j) > total_dist:
+            break
+        j-=1
+    return j-i + 1
 
 
 INPUT_S = '''Time:      7  15   30
