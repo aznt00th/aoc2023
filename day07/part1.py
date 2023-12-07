@@ -4,7 +4,7 @@ import argparse
 import os.path
 
 import pytest
-
+from collections import Counter
 import support
 
 INPUT_TXT = os.path.join(os.path.dirname(__file__), 'input.txt')
@@ -22,38 +22,21 @@ def rank(hand):
     return res
 
 def score(hand):
-    lst = sorted(hand)
-    if all([lst[i] == lst[i+1] for i in range(4)]):
+    cnt = Counter(hand)
+    u_cnt = Counter(cnt.values())
+    max_cnt = max(u_cnt)
+    if max_cnt == 5:
         return '7' + rank(hand)
-
-    if all([lst[i] == lst[i+1] for i in range(3)]) or  all([lst[i] == lst[i+1] for i in range(1,4)]):
-        return '6' + rank(hand)
-
-    if lst[0] == lst[1] and lst[2] == lst[3] and lst[3] == lst[4]:
-        return '5' + rank(hand)
-
-    if lst[0] == lst[1] and lst[1] == lst[2] and lst[3] == lst[4]:
-        return '5' + rank(hand)
-
-    if all([lst[i] == lst[i+1] for i in range(2)]) or  all([lst[i] == lst[i+1] for i in range(1,3)]) or  all([lst[i] == lst[i+1] for i in range(2,4)]):
+    if max_cnt == 4:
+        return  '6' + rank(hand)
+    if max_cnt == 3:
+        if 2 in u_cnt:
+            return '5' + rank(hand)
         return '4' + rank(hand)
-    tmp = {}
-    for char in lst:
-        if char in tmp:
-            tmp[char] += 1
-        else:
-            tmp[char] = 1
-    num_pairs = 0
-    for k,v in tmp.items():
-        if v == 2:
-            num_pairs +=1
-    if num_pairs == 2:
+    if u_cnt[2] == 2:
         return '3' + rank(hand)
-    if num_pairs == 1:
+    if 2 in u_cnt:
         return '2' + rank(hand)
-    for i in range(4):
-        if lst[i] == lst[i+1]:
-            raise Exception
     return '1' + rank(hand)
 
 def compute(s: str) -> int:
@@ -65,17 +48,7 @@ def compute(s: str) -> int:
                           int(line.split()[1])
 , line.split()[0]))
     hands.sort(key = lambda x: x[0])
-    res = 0
-#    print(hands)
-#    for hand in hands:
-#        if hand[2][0] == '2':
-#            print(hand)
-    for rnk, (_, bid, cards) in enumerate(hands):
-        res += (1 + rnk) * bid
-    # TODO: implement solution here!
-#    print(rnk, bid)
     return sum(e*bid for e, (_,bid,_) in enumerate(hands, 1))
-    return res
 
 
 INPUT_S = '''\
